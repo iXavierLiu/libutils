@@ -12,10 +12,19 @@ add_library(${PROJECT_NAME} ${SRC} ${SRC_implementations} ${SRC_TimerTask} ${SRC
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
 target_include_directories(${PROJECT_NAME} PRIVATE "src")
 
-option(BDUIL_TEST "" ON)
-if(BDUIL_TEST)
+option(BDUIL_MAIN "编译.exe测试程序" ON)
+option(BDUIL_GTEST "进行GTEST测试" OFF)
+if(BDUIL_MAIN)
+	find_package(GTest CONFIG REQUIRED)
+	
 	set(TEST_PROJECT ${PROJECT_NAME}-test)
-	add_executable(${TEST_PROJECT} "tests/main.cpp")
+	if(BDUIL_GTEST)
+		add_executable(${TEST_PROJECT} "tests/TestThreadSlice.cpp" "tests/TestTimerTask.cpp")
+		target_link_libraries(${TEST_PROJECT} PRIVATE GTest::gtest_main)
+	else()
+		add_executable(${TEST_PROJECT} "tests/main.cpp")
+	endif()
+
 	target_link_libraries(${TEST_PROJECT} PRIVATE ${PROJECT_NAME})
 	target_compile_options(${TEST_PROJECT} PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()
