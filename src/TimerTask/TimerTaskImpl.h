@@ -1,8 +1,8 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <set>
-#include <chrono>
 
 namespace libutils {
 

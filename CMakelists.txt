@@ -6,8 +6,9 @@ aux_source_directory("src/" SRC)
 aux_source_directory("src/implementations" SRC_implementations)
 aux_source_directory("src/TimerTask" SRC_TimerTask)
 aux_source_directory("src/Daemon" SRC_Daemon)
+aux_source_directory("src/ThreadSlice" SRC_ThreadSlice)
 
-add_library(${PROJECT_NAME} ${SRC} ${SRC_implementations} ${SRC_TimerTask} ${SRC_Daemon})
+add_library(${PROJECT_NAME} ${SRC} ${SRC_implementations} ${SRC_TimerTask} ${SRC_Daemon} ${SRC_ThreadSlice})
 target_include_directories(${PROJECT_NAME} PUBLIC "include")
 target_include_directories(${PROJECT_NAME} PRIVATE "src")
 
