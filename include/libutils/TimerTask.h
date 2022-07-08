@@ -19,8 +19,6 @@ class TimerTask
 public:
 	using Ptr = std::shared_ptr<TimerTask>;
 
-	friend class TimerTaskPoolImpl;
-
 public:
 	virtual ~TimerTask();
 
