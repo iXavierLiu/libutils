@@ -1,6 +1,8 @@
+#include "libutils/Time.h"
 #include "libutils/TimerTask.h"
 #include "libutils/TimerTaskPool.h"
 
+#include <random>
 #include <thread>
 
 int main(int argc, char* argv[])
@@ -9,31 +11,20 @@ int main(int argc, char* argv[])
 
 	auto pool = TimerTaskPool::create();
 
-	double times = 0;
-	pool->Add(TimerTask::create(
-		[&times]() -> bool {
-			printf("%f, 1000ms\n", ++times);
-			return true;
-		},
-		1000, 10));
+	std::default_random_engine random;
+	random.seed(static_cast<uint32_t>(Time::sys_ts()));
 
-	pool->Add(TimerTask::create(
-		[&times]() -> bool {
-			printf("%f, 500ms\n", times += 0.1);
-			return true;
-		},
-		500, 0));
+	for (int i = 0; i < 20000; ++i)
+	{
+		pool->Add(TimerTask::create(
+			[&random]() -> bool {
+				auto r = random();
+				if (r % 9876 == 0) printf("%u\n", r);
+				return true;
+			},
+			50, 0));
+	}
 
-	TimerTask::Ptr p;
-	pool->Add(p = TimerTask::create(
-				  [&times]() -> bool {
-					  printf("%f, 50ms\n", times += 0.000001);
-					  return true;
-				  },
-				  50, 0));
-
-	std::this_thread::sleep_for(std::chrono::seconds(5));
-	pool->Delete(p);
-	std::this_thread::sleep_for(std::chrono::seconds(3));
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	return 0;
 }

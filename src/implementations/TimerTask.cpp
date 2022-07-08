@@ -18,7 +18,7 @@ TimerTask::Ptr TimerTask::create(std::function<bool()> func, uint64_t intervalMi
 	return Ptr(new TimerTask(func, intervalMilSec, times, immediately));
 }
 
-TaskContext* libutils::TimerTask::GetContext()
+bool TimerTask::TimeSlice(const std::chrono::steady_clock::time_point& time)
 {
-	return &impl->taskCtx;
+	return impl->TimeSlice(time);
 }

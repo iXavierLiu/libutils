@@ -14,6 +14,8 @@ public:
 
 	virtual ~TimerTaskImpl() = default;
 
+	bool TimeSlice(const std::chrono::steady_clock::time_point& time);
+
 public:
 	TaskContext taskCtx;
 };

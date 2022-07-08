@@ -1,5 +1,7 @@
 #include "TimerTaskPoolImpl.h"
 
+#include "libutils/Time.h"
+
 using namespace libutils;
 
 void TimerTaskPoolImpl::Job()
@@ -8,33 +10,27 @@ void TimerTaskPoolImpl::Job()
 	{
 		std::unique_lock<std::mutex> lck(timersMtx);
 
-		for (auto it = timers.begin(); it != timers.end();)
+		auto time = Time::steady_time();
+
+		for (auto it = timers.begin(); it != timers.end() && Daemon::IsRunnable();)
 		{
-			auto now = std::chrono::steady_clock::now();
-			auto& ctx = *(*it)->GetContext();
-
-			// 未到执行时间
-			if (ctx.nextTime > now)
-			{
-				++it;
-				continue;
-			};
-
-			ctx.func();
-
-			// 次数执行完毕
-			if (!ctx.always && --ctx.times == 0)
+			if ((*it)->TimeSlice(time))
 			{
 				it = timers.erase(it);
 				continue;
-			};
-
-			ctx.nextTime = now + ctx.intervalMilSec;
+			}
 			++it;
 		};
 		lck.unlock();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(50));
+		auto timeUseMilSec = Time::timing_ms(time);
+		auto sleepMilSec = timeUseMilSec >= expectedAvgMilSecPerRound ? 0 : expectedAvgMilSecPerRound - timeUseMilSec;
+
+#if _DEBUG
+		if (!sleepMilSec) printf("[TimerTaskPoolImpl] out of time, round time use: %lld ms\n", timeUseMilSec);
+#endif
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilSec));
 	};
 }
 
