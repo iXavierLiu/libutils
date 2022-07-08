@@ -1,6 +1,7 @@
 #pragma once
 
-#include "TimerTaskContext.h"
+#include <chrono>
+#include <type_traits>
 
 namespace std {
 template <class T>

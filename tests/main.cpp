@@ -2,6 +2,7 @@
 #include "libutils/TimerTask.h"
 #include "libutils/TimerTaskPool.h"
 
+#include <functional>
 #include <random>
 #include <thread>
 

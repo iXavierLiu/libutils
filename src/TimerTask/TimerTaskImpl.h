@@ -1,9 +1,8 @@
 #pragma once
-#include "../Daemon/DaemonImpl.h"
-#include "libutils/TimerTaskContext.h"
 
 #include <functional>
 #include <set>
+#include <chrono>
 
 namespace libutils {
 
@@ -16,8 +15,15 @@ public:
 
 	bool TimeSlice(const std::chrono::steady_clock::time_point& time);
 
-public:
-	TaskContext taskCtx;
+private:
+	struct
+	{
+		std::function<bool()> func = nullptr;
+		std::chrono::milliseconds intervalMilSec{ 0 };
+		std::chrono::steady_clock::time_point nextTime{};
+		uint64_t times = 1;
+		bool always = false;
+	} taskCtx;
 };
 
 }  // namespace libutils
