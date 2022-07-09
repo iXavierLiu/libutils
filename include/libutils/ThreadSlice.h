@@ -1,4 +1,6 @@
 #pragma once
+#include "TemplateProxy.h"
+
 #include <functional>
 #include <memory>
 
@@ -7,46 +9,60 @@ namespace libutils {
 class ThreadSliceImpl;
 
 /// <summary>
-/// 多线程类
+/// 多线程类的代理类
 ///
-/// 以指定线程数(默认一个)重复调用回调函数，并在回调参数中给出一个线程间共享的上下文
+/// 由于【模板类】无法将定义和实现的分离，所以通过将【不定参数】打包成一个【参数包】交由代理类将包透传给回调函数
 /// </summary>
-class ThreadSlice
+/// <typeparam name="T">线程间共享的上下文类型</typeparam>
+class ThreadSliceProxy
 {
 public:
-	using Ptr = std::shared_ptr<ThreadSlice>;
-	using SharedContex = void*;
+	using Ptr = std::shared_ptr<ThreadSliceProxy>;
+	using ArgsPackType = std::shared_ptr<void>;
+	using FuncType = std::function<bool(ArgsPackType)>;
 
 public:
-	virtual ~ThreadSlice();
-	static Ptr create(std::function<bool(SharedContex)> func, SharedContex ctx);
+	virtual ~ThreadSliceProxy();
+
+	static Ptr create(FuncType func, ArgsPackType argsPack);
 
 	bool Add(uint8_t count);
 
 private:
-	ThreadSlice(std::function<bool(SharedContex)> func, SharedContex ctx);
+	ThreadSliceProxy(FuncType func, ArgsPackType argsPack);
 
 private:
 	ThreadSliceImpl* impl;
 };
 
 /// <summary>
-/// 多线程类的代理类
+/// 多线程类
 ///
-/// 由于模板类无法实现定义和实现的分离，实际使用中可通过本代理类以指定的上下文类型创建多线程实例
+/// 默认一个线程数，以指定的回调参数重复地调用指定的回调函数
 /// </summary>
-/// <typeparam name="T">线程间共享的上下文类型</typeparam>
-template <typename T>
-class ThreadSliceProxy : public ThreadSlice
+class ThreadSlice : protected ThreadSliceProxy
 {
 public:
-	using Ptr = ThreadSlice::Ptr;
-	using SharedContex = T*;
-
-public:
-	static Ptr create(std::function<bool(SharedContex)> func, SharedContex ctx)
+	/// <summary>
+	/// 创建一个多线程类，返回一个多线程代理类的实例
+	///
+	/// 示例：
+	///     create([](int a, int b)->bool{ ...; return IsDone(); }, variableA, variableB);
+	/// </summary>
+	/// <typeparam name="F">回调函数类型</typeparam>
+	/// <typeparam name="...Args">回调参数类型</typeparam>
+	/// <param name="func">形如 [](Args... args)->bool{} 的回调函数</param>
+	/// <param name="...args">调用回调函数时给出的参数，如果参数是变量或指针，调用者需要维护它的生命周期</param>
+	/// <returns>多线程代理类的实例</returns>
+	template <typename F, typename... Args>
+	static Ptr create(F&& func, Args&&... args)
 	{
-		return ThreadSlice::create([=](ThreadSlice::SharedContex __ctx) { return func(static_cast<SharedContex>(__ctx)); }, static_cast<ThreadSlice::SharedContex>(ctx));
+		return ThreadSliceProxy::create(
+			[=](ThreadSliceProxy::ArgsPackType ctx) {
+				// 解包参数后调用回调
+				return TemplateProxy::apply(func, TemplateProxy::Unpack<Args...>(ctx));
+			},
+			TemplateProxy::Pack(std::forward<Args>(args)...));
 	}
 };
 

@@ -5,10 +5,10 @@ using namespace libutils;
 
 void ThreadSliceImpl::Job()
 {
-	while (Daemon::IsRunnable()) { func(sharedContex); }
+	while (Daemon::IsRunnable()) { func(argsPack); }
 }
 
-ThreadSliceImpl::ThreadSliceImpl(std::function<bool(SharedContexPtr ctx)> func, SharedContexPtr ctx) : Daemon(this), func(func), sharedContex(ctx)
+ThreadSliceImpl::ThreadSliceImpl(FuncType func, ArgsPackType argsPack) : Daemon(this), func(func), argsPack(argsPack)
 {
 	Daemon::Start();
 }

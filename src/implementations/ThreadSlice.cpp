@@ -4,18 +4,18 @@
 
 using namespace libutils;
 
-libutils::ThreadSlice::~ThreadSlice()
+ThreadSliceProxy::~ThreadSliceProxy()
 {
 	delete impl;
 }
 
-ThreadSlice::Ptr ThreadSlice::create(std::function<bool(SharedContex)> func, SharedContex ctx)
+ThreadSliceProxy::Ptr ThreadSliceProxy::create(FuncType func, ArgsPackType argsPack)
 {
-	return Ptr(new ThreadSlice(func, ctx));
+	return Ptr(new ThreadSliceProxy(func, argsPack));
 }
-bool libutils::ThreadSlice::Add(uint8_t count)
+bool ThreadSliceProxy::Add(uint8_t count)
 {
 	return impl->Add(count);
 };
 
-libutils::ThreadSlice::ThreadSlice(std::function<bool(SharedContex)> func, SharedContex ctx) : impl(new ThreadSliceImpl(func, ctx)) {}
+ThreadSliceProxy::ThreadSliceProxy(FuncType func, ArgsPackType argsPack) : impl(new ThreadSliceImpl(func, argsPack)) {}

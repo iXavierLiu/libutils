@@ -35,8 +35,8 @@ TEST(TestThreadSlice, Primary)
 	auto ctxPtr = std::make_shared<ThreadContex>();
 
 	// 启动多线程计算素数，每个线程每次计算 [base,base+range) 区间的素数，并将结果放入公共上下文中
-	auto threadSlicePtr = ThreadSliceProxy<ThreadContex>::create(
-		[](ThreadSliceProxy<ThreadContex>::SharedContex ctx) -> bool {
+	auto threadSlicePtr = ThreadSlice::create(
+		[](std::shared_ptr<ThreadContex> ctx, const std::thread::id& parentThreadId) -> bool {
 			const std::thread::id tid = std::this_thread::get_id();
 			uint64_t base = 0;
 			{
@@ -59,7 +59,7 @@ TEST(TestThreadSlice, Primary)
 			}
 			return true;
 		},
-		ctxPtr.get());
+		ctxPtr, std::this_thread::get_id());
 
 	// 实例默认有一个线程，添加剩余线程
 	threadSlicePtr->Add(threadNumber - 1);
