@@ -20,11 +20,7 @@ public:
 	/// <param name="...args"></param>
 	/// <returns></returns>
 	template <typename... Args>
-	static PackType Pack(Args&&... args)
-	{
-		std::tuple<Args...> t = std::forward_as_tuple(std::forward<Args>(args)...);
-		return std::make_shared<std::tuple<Args...>>(std::move(t));
-	}
+	static PackType Pack(Args&&... args);
 
 	/// <summary>
 	/// 从 PackType 类型的变量解包
@@ -35,7 +31,6 @@ public:
 	/// <param name="...args"></param>
 	template <typename... Args>
 	static std::shared_ptr<std::tuple<Args...>> Unpack(PackType pack);
-
 
 	/// <summary>
 	/// 通过解包出来的参数调用指定函数
@@ -52,6 +47,12 @@ private:
 	template <size_t... indexes, typename F, typename... Args>
 	static auto __apply(std::index_sequence<indexes...>, F&& f, std::shared_ptr<std::tuple<Args...>> tuple);
 };
+
+template <typename... Args>
+inline TemplateProxy::PackType TemplateProxy::Pack(Args&&... args)
+{
+	return std::make_shared<std::tuple<Args...>>(std::forward_as_tuple(std::forward<Args>(args)...));
+}
 
 template <typename... Args>
 inline std::shared_ptr<std::tuple<Args...>> TemplateProxy::Unpack(PackType pack)
