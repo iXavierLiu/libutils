@@ -15,7 +15,7 @@ ThreadSliceImpl::ThreadSliceImpl(std::function<bool(SharedContexPtr ctx)> func, 
 
 ThreadSliceImpl::~ThreadSliceImpl()
 {
-	Daemon::Stop(true);
+	Daemon::Stop();
 	std::for_each(threads.begin(), threads.end(), [](std::thread& t) {
 		if (t.joinable()) t.join();
 	});

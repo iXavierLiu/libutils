@@ -14,7 +14,7 @@ public:
 
 protected:
 	virtual bool Start();
-	virtual bool Stop(bool sync = false);
+	virtual bool Stop(bool sync = true);
 	bool IsRunnable();
 
 private:

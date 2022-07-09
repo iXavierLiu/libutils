@@ -16,7 +16,7 @@ public:
 
 	bool Start();
 
-	bool Stop(bool sync = false);
+	bool Stop(bool sync);
 
 	bool IsRunnable();
 

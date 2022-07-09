@@ -37,7 +37,7 @@ void TimerTaskPoolImpl::Job()
 TimerTaskPoolImpl::~TimerTaskPoolImpl()
 {
 	// 这里需要先销毁子进程
-	Daemon::Stop(true);
+	Daemon::Stop();
 }
 
 bool TimerTaskPoolImpl::Add(TimerTask::Ptr ptr)
