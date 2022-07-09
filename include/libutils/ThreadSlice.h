@@ -38,7 +38,7 @@ private:
 /// <summary>
 /// 多线程类
 ///
-/// 默认一个线程数，以指定的回调参数重复地调用指定的回调函数
+/// 以指定的回调参数重复地调用指定的回调函数
 /// </summary>
 class ThreadSlice : protected ThreadSliceProxy
 {

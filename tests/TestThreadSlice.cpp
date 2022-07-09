@@ -61,8 +61,8 @@ TEST(TestThreadSlice, Primary)
 		},
 		ctxPtr, std::this_thread::get_id());
 
-	// 实例默认有一个线程，添加剩余线程
-	threadSlicePtr->Add(threadNumber - 1);
+	// 添加线程
+	threadSlicePtr->Add(threadNumber);
 
 	std::this_thread::sleep_for(std::chrono::seconds(10));
 

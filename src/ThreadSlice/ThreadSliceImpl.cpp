@@ -5,7 +5,25 @@ using namespace libutils;
 
 void ThreadSliceImpl::Job()
 {
-	while (Daemon::IsRunnable()) { func(argsPack); }
+	while (Daemon::IsRunnable())
+	{
+		std::unique_lock<std::mutex> lck(cvMtx);
+		if (!cv.wait_for(lck, std::chrono::milliseconds(100), [this]() -> bool { return cvThreadId; })) continue;
+
+		Delete(cvThreadId);
+		cvThreadId = 0;
+		cv.notify_all();
+	}
+
+	std::lock_guard<std::mutex> threadLck(threadsMtx);
+	while (!threads.empty())
+	{
+		std::unique_lock<std::mutex> lck(cvMtx);
+		cv.wait(lck, [this]() -> bool { return cvThreadId; });
+		DeleteUnsafe(cvThreadId);
+		cvThreadId = 0;
+		cv.notify_all();
+	}
 }
 
 ThreadSliceImpl::ThreadSliceImpl(FuncType func, ArgsPackType argsPack) : Daemon(this), func(func), argsPack(argsPack)
@@ -16,13 +34,44 @@ ThreadSliceImpl::ThreadSliceImpl(FuncType func, ArgsPackType argsPack) : Daemon(
 ThreadSliceImpl::~ThreadSliceImpl()
 {
 	Daemon::Stop();
-	std::for_each(threads.begin(), threads.end(), [](std::thread& t) {
-		if (t.joinable()) t.join();
-	});
 }
 
 bool ThreadSliceImpl::Add(uint8_t count)
 {
-	for (int i = 0; i < count; ++i) threads.emplace_back(std::thread(&ThreadSliceImpl::Job, this));
+	std::lock_guard<std::mutex> lck(threadsMtx);
+	for (int i = 0; i < count; ++i)
+	{
+		std::thread th = std::thread(&ThreadSliceImpl::ThreadJob, this);
+		threads.insert({ hash(th.get_id()), std::move(th) });
+	};
 	return true;
+}
+
+void ThreadSliceImpl::ThreadJob()
+{
+	while (Daemon::IsRunnable())
+	{
+		if (!func(argsPack)) break;
+	}
+
+	std::unique_lock<std::mutex> lck(cvMtx);
+	cv.wait(lck, [this]() -> bool { return !cvThreadId; });
+
+	cvThreadId = hash(std::this_thread::get_id());
+	cv.notify_one();
+}
+
+void ThreadSliceImpl::Delete(uint32_t threadId)
+{
+	std::lock_guard<std::mutex> lck(threadsMtx);
+	return DeleteUnsafe(threadId);
+}
+
+void ThreadSliceImpl::DeleteUnsafe(uint32_t threadId)
+{
+	auto it = threads.find(threadId);
+
+	if (threads.end() == it) return;
+	if (it->second.joinable()) it->second.join();
+	threads.erase(it);
 }

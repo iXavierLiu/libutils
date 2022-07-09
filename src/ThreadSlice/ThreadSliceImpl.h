@@ -25,9 +25,22 @@ public:
 	bool Add(uint8_t count = 1);
 
 private:
+	virtual void ThreadJob();
+	void Delete(uint32_t threadId);
+	void DeleteUnsafe(uint32_t threadId);
+
+private:
 	FuncType func;
-	std::list<std::thread> threads;
 	ArgsPackType argsPack = nullptr;
+
+	std::hash<std::thread::id> hash;
+
+	std::map<uint32_t, std::thread> threads;
+	std::mutex threadsMtx;
+
+	std::condition_variable cv;
+	std::mutex cvMtx;
+	uint32_t cvThreadId = 0;
 };
 
 };	// namespace libutils
