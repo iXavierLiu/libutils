@@ -11,9 +11,9 @@ class ThreadSliceImpl;
 /// <summary>
 /// 多线程类的代理类
 ///
-/// 由于【模板类】无法将定义和实现的分离，所以通过将【不定参数】打包成一个【参数包】交由代理类将包透传给回调函数
+/// 由于【模板类】无法将定义和实现的分离，所以ThreadSlice通过将【不定参数】打包成一个【参数包】交由ThreadSliceProxy代理类将包透传给回调函数，
+/// 由ThreadSlice解包并实现最终回调
 /// </summary>
-/// <typeparam name="T">线程间共享的上下文类型</typeparam>
 class ThreadSliceProxy
 {
 public:
@@ -44,10 +44,10 @@ class ThreadSlice : protected ThreadSliceProxy
 {
 public:
 	/// <summary>
-	/// 创建一个多线程类，返回一个多线程代理类的实例
+	/// 创建一个多线程类并返回代理类的实例
 	///
 	/// 示例：
-	///     create([](int a, int b)->bool{ ...; return IsDone(); }, variableA, variableB);
+	///     create([](int a, int b)->bool{ ...; return ToBeContinue(); }, variableOrExprA, variableOrExprB);
 	/// </summary>
 	/// <typeparam name="F">回调函数类型</typeparam>
 	/// <typeparam name="...Args">回调参数类型</typeparam>

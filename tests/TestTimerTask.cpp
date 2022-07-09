@@ -22,7 +22,7 @@ TEST(TestTimerTask, Timer)
 			static auto last = Time::steady_time();
 			if (times1++ == 0) return true;
 
-			lt(abs(Time::timing_ms(last) - interval1), interval1 / 20);
+			lt(abs(Time::timing_ms(last) - interval1), interval1 / 20);	 // 计算实际用时与interval的差
 			last = Time::steady_time();
 			return true;
 		},
@@ -33,7 +33,7 @@ TEST(TestTimerTask, Timer)
 			static auto last = Time::steady_time();
 			if (times2++ == 0) return true;
 
-			lt(abs(Time::timing_ms(last) - interval2), interval2 / 20);
+			lt(abs(Time::timing_ms(last) - interval2), interval2 / 20);	 // 计算实际用时与interval的差
 			last = Time::steady_time();
 			return true;
 		},

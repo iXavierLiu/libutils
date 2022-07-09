@@ -71,7 +71,7 @@ TEST(TestThreadSlice, Primary)
 	threadSlicePtr.reset();
 	auto timeUse = Time::timing_ms(ts);
 
-	EXPECT_LE(timeUse, 50);
+	EXPECT_LE(timeUse, 50); // expect time use less than 50 ms
 
 	for (int i = 0; i < 10; ++i)
 	{
@@ -79,8 +79,6 @@ TEST(TestThreadSlice, Primary)
 		ctxPtr->mtx.unlock();
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
 	}
-
-	EXPECT_LE(timeUse, 1000ull);  // expect time use less than 1000ms
 
 	ASSERT_EQ(ctxPtr->data.size(), threadNumber);
 
