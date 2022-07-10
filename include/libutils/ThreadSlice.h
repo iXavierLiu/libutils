@@ -28,6 +28,8 @@ public:
 
 	bool Add(uint8_t count);
 
+	uint32_t GetCount();
+
 private:
 	ThreadSliceProxy(FuncType func, ArgsPackType argsPack);
 
@@ -42,6 +44,9 @@ private:
 /// </summary>
 class ThreadSlice : protected ThreadSliceProxy
 {
+public:
+	using ThreadSliceProxy::Ptr;
+
 public:
 	/// <summary>
 	/// 创建一个多线程类并返回代理类的实例
@@ -58,7 +63,25 @@ public:
 	static Ptr create(F&& func, Args&&... args)
 	{
 		return ThreadSliceProxy::create(
-			[=](ThreadSliceProxy::ArgsPackType ctx) {
+			[func](ThreadSliceProxy::ArgsPackType ctx) -> bool {
+				// 解包参数后调用回调
+				return TemplateProxy::apply(func, TemplateProxy::Unpack<Args...>(ctx));
+			},
+			TemplateProxy::Pack(std::forward<Args>(args)...));
+	}
+
+	/// <summary>
+	/// 用于成员函数的重载
+	///
+	/// 示例：
+	///		Test test;
+	///     create(&Test::func, &test, variableOrExprA, variableOrExprB);
+	/// </summary>
+	template <typename F, typename... Args>
+	static Ptr create(bool (F::*func)(...), Args&&... args)
+	{
+		return ThreadSliceProxy::create(
+			[func](ThreadSliceProxy::ArgsPackType ctx) -> bool {
 				// 解包参数后调用回调
 				return TemplateProxy::apply(func, TemplateProxy::Unpack<Args...>(ctx));
 			},

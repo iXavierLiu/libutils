@@ -47,6 +47,12 @@ bool ThreadSliceImpl::Add(uint8_t count)
 	return true;
 }
 
+uint32_t ThreadSliceImpl::GetCount()
+{
+	std::lock_guard<std::mutex> lck(threadsMtx);
+	return threads.size();
+}
+
 void ThreadSliceImpl::ThreadJob()
 {
 	while (Daemon::IsRunnable())

@@ -23,6 +23,7 @@ public:
 	ThreadSliceImpl(FuncType func, ArgsPackType ctx);
 	virtual ~ThreadSliceImpl();
 	bool Add(uint8_t count = 1);
+	uint32_t GetCount();
 
 private:
 	virtual void ThreadJob();

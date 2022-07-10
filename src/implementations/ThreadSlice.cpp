@@ -16,6 +16,10 @@ ThreadSliceProxy::Ptr ThreadSliceProxy::create(FuncType func, ArgsPackType argsP
 bool ThreadSliceProxy::Add(uint8_t count)
 {
 	return impl->Add(count);
+}
+uint32_t ThreadSliceProxy::GetCount()
+{
+	return impl->GetCount();
 };
 
 ThreadSliceProxy::ThreadSliceProxy(FuncType func, ArgsPackType argsPack) : impl(new ThreadSliceImpl(func, argsPack)) {}
