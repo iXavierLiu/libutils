@@ -1,6 +1,6 @@
 #include "libutils/ThreadSlice.h"
 
-#include "ThreadSlice/ThreadSliceImpl.h"
+#include "ThreadSliceImpl.h"
 
 using namespace libutils;
 

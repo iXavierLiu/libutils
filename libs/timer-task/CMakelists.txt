@@ -1,0 +1,4 @@
+cmake_minimum_required(VERSION 3.10)
+project(timer-task LANGUAGES CXX)
+
+libutils_build_module(${PROJECT_NAME} daemon time)

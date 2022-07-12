@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 3.10)
+project(template LANGUAGES CXX)
+
+libutils_build_module_interface(${PROJECT_NAME})
+
