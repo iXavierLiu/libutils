@@ -3,6 +3,7 @@
 #include "libutils/Time.h"
 
 #include <algorithm>
+#include <mutex>
 #include <thread>
 #include <unordered_set>
 #include <vector>

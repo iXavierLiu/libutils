@@ -30,3 +30,6 @@ if(BDUIL_MAIN)
 endif()
 
 target_compile_options(${PROJECT_NAME} PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+
+install(TARGETS ${PROJECT_NAME} LIBRARY)
+install(DIRECTORY "include/libutils" TYPE "INCLUDE")

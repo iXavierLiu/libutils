@@ -3,6 +3,8 @@
 #include "libutils/TimerTask.h"
 #include "libutils/TimerTaskPool.h"
 
+#include <thread>
+
 using namespace libutils;
 
 TEST(TestTimerTask, Timer)
