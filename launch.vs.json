@@ -7,6 +7,12 @@
       "project": "CMakeLists.txt",
       "projectTarget": "libutils-test.exe",
       "name": "libutils-test.exe"
+    },
+    {
+      "type": "default",
+      "project": "CMakeLists.txt",
+      "projectTarget": "libutils-unitest.exe",
+      "name": "libutils-unitest.exe"
     }
   ]
 }

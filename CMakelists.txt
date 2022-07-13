@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10)
 
 project(libutils LANGUAGES CXX)
 
-option(BDUIL_MAIN "编译.exe测试程序" ON)
-option(BDUIL_GTEST "进行GTEST测试" OFF)
+option(BDUIL_TEST "编译测试程序" OFF)
+option(BDUIL_UNITEST "编译GTEST单元测试" OFF)
 
 include("cmake/BuildModule.cmake")
 
@@ -26,16 +26,20 @@ add_library(${PROJECT_NAME}::libutils_all ALIAS libutils_all)
 install(TARGETS libutils_all LIBRARY)
 
 # build test
-if(BDUIL_MAIN)
-	find_package(GTest CONFIG REQUIRED)
-	
+if(BDUIL_TEST)
 	set(TEST_PROJECT ${PROJECT_NAME}-test)
-	if(BDUIL_GTEST)
-		add_executable(${TEST_PROJECT} "tests/TestThreadSlice.cpp" "tests/TestTimerTask.cpp")
-		target_link_libraries(${TEST_PROJECT} PRIVATE GTest::gtest_main)
-	else()
-		add_executable(${TEST_PROJECT} "tests/main.cpp")
-	endif()
+
+	add_executable(${TEST_PROJECT} "tests/main.cpp")
+	target_link_libraries(${TEST_PROJECT} PRIVATE libutils::libutils_all)
+	target_compile_options(${TEST_PROJECT} PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
+endif()
+
+if(BDUIL_UNITEST)
+	set(TEST_PROJECT ${PROJECT_NAME}-unitest)
+	
+	find_package(GTest CONFIG REQUIRED)
+	add_executable(${TEST_PROJECT} "tests/TestThreadSlice.cpp" "tests/TestTimerTask.cpp")
+	target_link_libraries(${TEST_PROJECT} PRIVATE GTest::gtest_main)
 
 	target_link_libraries(${TEST_PROJECT} PRIVATE libutils::libutils_all)
 	target_compile_options(${TEST_PROJECT} PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>" "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")

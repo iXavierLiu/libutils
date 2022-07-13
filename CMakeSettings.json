@@ -10,7 +10,18 @@
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x86" ],
-      "variables": []
+      "variables": [
+        {
+          "name": "BDUIL_TEST",
+          "value": "ON",
+          "type": "BOOL"
+        },
+        {
+          "name": "BDUIL_UNITEST",
+          "value": "ON",
+          "type": "BOOL"
+        }
+      ]
     },
     {
       "name": "x86-Release",
