@@ -4,7 +4,9 @@ namespace libutils {
 
 class IDaemon
 {
-public:
+	friend class DaemonImpl;
+
+private:
 	virtual void Job() = 0;
 };
 
