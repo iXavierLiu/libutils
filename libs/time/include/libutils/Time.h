@@ -19,6 +19,8 @@ public:
 	// 时间差
 	static int64_t timing_ms(std::chrono::system_clock::time_point tm);
 	static int64_t timing_ms(std::chrono::steady_clock::time_point tm);
+	static int64_t timing_us(std::chrono::system_clock::time_point tm);
+	static int64_t timing_us(std::chrono::steady_clock::time_point tm);
 };
 
 }  // namespace libutils

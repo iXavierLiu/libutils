@@ -33,3 +33,13 @@ int64_t Time::timing_ms(std::chrono::steady_clock::time_point tm)
 {
 	return std::chrono::duration_cast<std::chrono::milliseconds>(Time::steady_time() - tm).count();
 }
+
+int64_t Time::timing_us(std::chrono::system_clock::time_point tm)
+{
+	return std::chrono::duration_cast<std::chrono::microseconds>(Time::sys_time() - tm).count();
+}
+
+int64_t Time::timing_us(std::chrono::steady_clock::time_point tm)
+{
+	return std::chrono::duration_cast<std::chrono::microseconds>(Time::steady_time() - tm).count();
+}
