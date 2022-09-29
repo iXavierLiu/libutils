@@ -103,7 +103,7 @@ TEST_F(ThreadSlicePrimaryTest, MutiThreadCalcPrimeTest)
 	ptr->Add(threadNumber);
 	ASSERT_EQ(ptr->GetCount(), threadNumber);
 
-	std::this_thread::sleep_for(std::chrono::seconds(10));
+	std::this_thread::sleep_for(std::chrono::seconds(2));
 
 	// 停止所有线程并计算停止所用时间
 	auto ts = Time::steady_time();
