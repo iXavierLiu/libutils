@@ -2,6 +2,11 @@
 
 #include "libutils/Time.h"
 
+#ifdef _WIN32
+#include <Windows.h>
+#pragma comment(lib, "Winmm.lib")
+#endif	// _WIN32
+
 using namespace libutils;
 
 void TimerTaskPoolImpl::Job()
@@ -29,8 +34,14 @@ void TimerTaskPoolImpl::Job()
 #if _DEBUG
 		if (!sleepMilSec) printf("[TimerTaskPoolImpl] out of time, round time use: %lld ms\n", timeUseMilSec);
 #endif
-
+#ifdef _WIN32
+		// setting minimum timer resolution
+		timeBeginPeriod(1);
+#endif	// _WIN32
 		std::this_thread::sleep_for(std::chrono::milliseconds(sleepMilSec));
+#ifdef _WIN32
+		timeEndPeriod(1);
+#endif	// _WIN32
 	};
 }
 

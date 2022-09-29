@@ -25,7 +25,7 @@ public:
 private:
 	std::set<TimerTask::Ptr> timers;
 	std::mutex timersMtx;
-	const uint32_t expectedAvgMilSecPerRound = 10;
+	const uint32_t expectedAvgMilSecPerRound = 2;
 };
 
 }  // namespace libutils
