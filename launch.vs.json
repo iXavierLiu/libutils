@@ -5,14 +5,15 @@
     {
       "type": "default",
       "project": "CMakeLists.txt",
-      "projectTarget": "libutils-test.exe",
-      "name": "libutils-test.exe"
+      "projectTarget": "libutils-tests-global.exe (tests\\libutils-tests-global.exe)",
+      "name": "global test"
     },
     {
       "type": "default",
       "project": "CMakeLists.txt",
-      "projectTarget": "libutils-unitest.exe",
-      "name": "libutils-unitest.exe"
+      "projectTarget": "libutils-tests-unit.exe (tests\\libutils-tests-unit.exe)",
+      "name": "unit test",
+      "args": [ "--gtest_filter=*" ]
     }
   ]
 }
