@@ -2,6 +2,7 @@ function(libutils_build_module name)
 
 	set(_LIB_NAME libutils_${name})
 
+	unset(_SRC)
 	aux_source_directory("src" _SRC)
 	
 	add_library(${_LIB_NAME} ${_SRC})
