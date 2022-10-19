@@ -28,10 +28,7 @@ private:
 	virtual void Job() override
 	{
 		std::lock_guard<std::mutex> lck(threadRunningMtx);
-		while (Daemon::IsRunnable())
-		{
-			std::this_thread::yield();
-		}
+		while (Daemon::IsRunnable()) { std::this_thread::yield(); }
 	}
 };
 

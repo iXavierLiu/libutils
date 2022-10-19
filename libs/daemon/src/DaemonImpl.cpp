@@ -29,7 +29,7 @@ bool DaemonImpl::Stop(bool sync)
 {
 	{
 		std::lock_guard<std::mutex> lck(mtx);
-		if (!isRunning) return false;
+		if (!isRunning && !thread.joinable()) return false;
 		isRunnable = false;
 	}
 
@@ -49,6 +49,7 @@ bool DaemonImpl::IsRunnable()
 void DaemonImpl::JobWrapper()
 {
 	idaemonPtr->Job();
+	
 	std::lock_guard<std::mutex> lck(mtx);
 	isRunning = false;
 }
